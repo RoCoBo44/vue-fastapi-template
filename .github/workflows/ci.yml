@@ -1,0 +1,57 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # ==========================
+    # Frontend Tests / Build
+    # ==========================
+    - name: Setup Bun (Frontend)
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: bun install
+
+    - name: Build Frontend
+      working-directory: ./frontend
+      run: bun run build
+
+    # ==========================
+    # Backend Tests
+    # ==========================
+    - name: Setup uv (Backend)
+      uses: astral-sh/setup-uv@v4
+      with:
+        version: "latest"
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: uv pip install --system fastapi uvicorn python-socketio motor pydantic
+
+    # ==========================
+    # Docker Compose Validation
+    # ==========================
+    - name: Test Docker Compose build
+      run: docker-compose build
