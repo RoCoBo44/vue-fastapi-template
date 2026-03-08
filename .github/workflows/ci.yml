@@ -54,4 +54,4 @@ jobs:
     # Docker Compose Validation
     # ==========================
     - name: Test Docker Compose build
-      run: docker-compose build
+      run: docker compose build
