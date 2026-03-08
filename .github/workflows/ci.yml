@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build-and-test:
@@ -54,4 +54,4 @@ jobs:
     # Docker Compose Validation
     # ==========================
     - name: Test Docker Compose build
-      run: docker-compose build
+      run: docker compose build
